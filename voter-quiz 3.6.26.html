@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>בעד מי את/ה באמת? | בחירות 2026</title>
+<meta property="og:title" content="בעד מי את/ה באמת? | בחירות 2026">
+<meta property="og:description" content="לא סקר דעות. לא קמפיין. רק הערכים שלך — ואלגוריתם מבוסס נתונים מחקריים יגיד לך לאיזו מפלגה הם מוליכים.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="he_IL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="בעד מי את/ה באמת? | בחירות 2026">
+<meta name="twitter:description" content="גלה לאן הערכים שלך מובילים — שאלון מבוסס נתונים מחקריים">
+<meta name="theme-color" content="#00b46e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{direction:rtl;font-family:'Heebo',sans-serif;background:#0a0a0a;color:#f0ece0;min-height:100vh;display:flex;justify-content:center;padding:2.5rem 1rem 5rem}
+#app{width:100%;max-width:580px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeUp .45s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.pill{display:inline-block;font-size:14px;font-weight:700;letter-spacing:.13em;padding:6px 18px;border-radius:99px;border:1px solid rgba(0,180,110,.5);color:#00b46e;margin-bottom:1.5rem}
+h1.hero{font-size:clamp(34px,7vw,50px);font-weight:900;line-height:1.12;margin-bottom:1rem}
+h1.hero span{color:#00b46e}
+.subtitle{font-size:16px;color:rgba(240,236,224,.6);line-height:1.75;margin-bottom:2.5rem;max-width:480px}
+.start-btn{display:inline-block;background:#00b46e;color:#0a0a0a;font-family:'Heebo',sans-serif;font-size:18px;font-weight:900;padding:16px 44px;border-radius:99px;border:none;cursor:pointer;transition:transform .15s,background .15s}
+.start-btn:hover{background:#00cc7d;transform:scale(1.03)}
+.start-btn:active{transform:scale(.97)}
+.meta-row{display:flex;gap:1.5rem;margin-top:1.75rem;flex-wrap:wrap}
+.meta-item{font-size:16px;color:rgba(240,236,224,.38);display:flex;align-items:center;gap:7px}
+.meta-dot{width:5px;height:5px;border-radius:50%;background:#00b46e;flex-shrink:0}
+.source-note{font-size:11px;color:rgba(240,236,224,.22);margin-top:1.75rem;line-height:1.7}
+.source-note a{color:rgba(0,180,110,.5);text-decoration:none}
+.progress-bar-wrap{width:100%;height:3px;background:rgba(255,255,255,.07);border-radius:99px;margin-bottom:2rem;overflow:hidden}
+.progress-bar-fill{height:100%;background:#00b46e;border-radius:99px;transition:width .45s ease}
+.q-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem}
+.q-counter{font-size:12px;font-weight:700;letter-spacing:.1em;color:#00b46e;text-transform:uppercase}
+.q-axis-tag{font-size:11px;font-weight:600;letter-spacing:.06em;padding:3px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.1);color:rgba(240,236,224,.4)}
+.q-text{font-size:clamp(19px,3.8vw,25px);font-weight:700;line-height:1.35;margin-bottom:.45rem}
+.q-sub{font-size:13.5px;color:rgba(240,236,224,.4);margin-bottom:1.8rem;min-height:18px;line-height:1.5}
+.multiselect-hint{font-size:12.5px;color:rgba(240,236,224,.3);text-align:center;margin-bottom:1rem}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.option-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:15px;text-align:right;cursor:pointer;transition:border-color .15s,background .15s,transform .12s;font-family:'Heebo',sans-serif;font-size:13.5px;font-weight:500;color:#f0ece0;line-height:1.45}
+.option-btn:hover{border-color:rgba(0,180,110,.5);background:rgba(0,180,110,.07);transform:translateY(-2px)}
+.option-btn.selected{border-color:#00b46e;background:rgba(0,180,110,.13)}
+.option-btn .opt-emoji{display:block;font-size:23px;margin-bottom:7px}
+.continue-btn{display:none;width:100%;background:#00b46e;color:#0a0a0a;font-family:'Heebo',sans-serif;font-size:17px;font-weight:900;padding:14px;border-radius:12px;border:none;cursor:pointer;margin-top:12px;transition:background .15s,transform .12s}
+.continue-btn:hover{background:#00cc7d;transform:scale(1.01)}
+.back-btn{font-size:15px;color:rgba(240,236,224,.28);cursor:pointer;background:none;border:none;font-family:'Heebo',sans-serif;padding:0;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.back-btn:hover{color:rgba(240,236,224,.5)}
+.skip-link{font-size:15px;color:rgba(240,236,224,.28);cursor:pointer;background:none;border:none;font-family:'Heebo',sans-serif;padding:0;display:block;text-align:center;text-decoration:underline;text-underline-offset:3px;margin-top:.4rem;width:100%}
+.skip-link:hover{color:rgba(240,236,224,.5)}
+/* RESULT */
+.result-eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;color:#00b46e;text-transform:uppercase;margin-bottom:.5rem}
+.archetype-hero{margin-bottom:1.75rem}
+.archetype-name{font-size:clamp(32px,6vw,44px);font-weight:900;line-height:1.1;margin-bottom:.5rem}
+.archetype-name .secondary{font-size:.6em;opacity:.5;font-weight:700}
+.archetype-sub{font-size:15px;color:rgba(240,236,224,.55);line-height:1.7;margin-bottom:1rem}
+.archetype-foundations{font-size:12px;font-weight:700;color:#00b46e;letter-spacing:.06em}
+.section-label{font-size:12px;font-weight:700;color:rgba(240,236,224,.32);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;margin-top:2rem}
+.radar-wrap{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:1.25rem;margin-bottom:.5rem;display:flex;justify-content:center}
+.archetype-pills-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.5rem}
+.archetype-pill{font-size:12px;font-weight:700;padding:5px 13px;border-radius:99px;border:1px solid rgba(255,255,255,.12);color:rgba(240,236,224,.5)}
+.archetype-pill.top1{border-color:rgba(0,180,110,.5);color:#00b46e;background:rgba(0,180,110,.08)}
+.archetype-pill.top2{border-color:rgba(74,158,255,.4);color:#4a9eff;background:rgba(74,158,255,.07)}
+.compass-wrap{margin-bottom:.5rem}
+.axis-row{margin-bottom:16px}
+.axis-name{font-size:13px;font-weight:700;color:#f0ece0;margin-bottom:4px}
+.axis-poles{display:flex;justify-content:space-between;font-size:11px;color:rgba(240,236,224,.32);margin-bottom:6px}
+.axis-track{width:100%;height:6px;background:rgba(255,255,255,.08);border-radius:99px;position:relative;overflow:visible}
+.axis-dot{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;border:2px solid #0a0a0a;transform:translate(-50%,-50%);transition:left .7s cubic-bezier(.34,1.56,.64,1)}
+.parties-label{font-size:12px;font-weight:700;color:rgba(240,236,224,.32);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;margin-top:2rem}
+.party-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.party-card.top-match{border-color:rgba(0,180,110,.5);background:rgba(0,180,110,.07)}
+.party-card.bottom-match{border-color:rgba(224,92,92,.3);background:rgba(224,92,92,.05)}
+.party-rank{font-size:12px;font-weight:900;color:rgba(240,236,224,.25);width:18px;flex-shrink:0;text-align:center}
+.party-badge{font-size:22px;width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.party-info{flex:1}
+.party-name{font-size:15px;font-weight:700;margin-bottom:3px}
+.party-bar-wrap{width:100%;height:4px;background:rgba(255,255,255,.07);border-radius:99px;margin-top:6px;overflow:hidden}
+.party-bar{height:100%;border-radius:99px;transition:width .6s ease}
+.match-pct{font-size:22px;font-weight:900;flex-shrink:0;white-space:nowrap}
+.match-pct span{font-size:11px;font-weight:500;color:rgba(240,236,224,.35)}
+.methodology-note{font-size:11px;color:rgba(240,236,224,.22);margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.06);line-height:1.7}
+.methodology-note a{color:rgba(0,180,110,.45);text-decoration:none}
+.share-section{padding-top:1.75rem;margin-top:1.75rem;border-top:1px solid rgba(255,255,255,.07)}
+.share-heading{font-size:18px;font-weight:900;color:#f0ece0;margin-bottom:.4rem;text-align:center}
+.share-sub{font-size:13px;color:rgba(240,236,224,.4);margin-bottom:1.5rem;text-align:center;line-height:1.6}
+#share-card-wrap{margin-bottom:1.25rem;display:none}
+#share-canvas{border-radius:16px;max-width:100%;display:block;margin:0 auto;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+.share-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.share-btn{font-family:'Heebo',sans-serif;font-size:14px;font-weight:700;padding:12px 22px;border-radius:99px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#f0ece0;cursor:pointer;transition:background .15s}
+.share-btn:hover{background:rgba(255,255,255,.1)}
+.share-btn.primary{background:#00b46e;border-color:#00b46e;color:#0a0a0a}
+.share-btn.primary:hover{background:#00cc7d}
+.compare-section{margin-top:2rem;padding:1.5rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;text-align:center}
+.compare-title{font-size:16px;font-weight:700;margin-bottom:.4rem}
+.compare-sub{font-size:13px;color:rgba(240,236,224,.4);margin-bottom:1.25rem;line-height:1.6}
+.compare-input{font-family:'Heebo',sans-serif;font-size:13px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:10px 14px;color:#f0ece0;text-align:center;min-width:240px;outline:none}
+.compare-input:focus{border-color:rgba(0,180,110,.5)}
+.compare-copied{font-size:12px;color:#00b46e;margin-top:.5rem;display:none}
+.restart-btn{font-family:'Heebo',sans-serif;font-size:12.5px;color:rgba(240,236,224,.25);background:none;border:none;cursor:pointer;margin-top:1.5rem;text-decoration:underline;text-underline-offset:3px;display:block;width:100%;text-align:center}
+@media(max-width:430px){.options-grid{grid-template-columns:1fr}body{padding:1.5rem 1rem 3rem}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div id="screen-intro" class="screen active">
+  <div class="pill">🗳️ בחירות 2026</div>
+  <h1 class="hero">בעד מי<br>את/ה <span>באמת?</span></h1>
+  <p class="subtitle">שכח מסיסמאות וקמפיינים. 15 שאלות על מה שבאמת חשוב לך — ואלגוריתם מבוסס נתונים מחקריים ימפה את הערכים שלך למפלגה ולארכיטיפ.</p>
+  <button class="start-btn" onclick="startQuiz()">התחל עכשיו ←</button>
+  <div class="meta-row">
+    <div class="meta-item"><div class="meta-dot"></div> 15 שאלות</div>
+    <div class="meta-item"><div class="meta-dot"></div> ~4 דקות</div>
+    <div class="meta-item"><div class="meta-dot"></div> אנונימי לחלוטין</div>
+  </div>
+  <p class="source-note">ההתאמה למפלגות מבוססת על <a href="https://www.chesdata.eu/chesisrael" target="_blank">CHES-Israel</a> — סקר 50 פוליטולוגים (Zur &amp; Bakker, 2023, <em>Party Politics</em>). הארכיטיפים מבוססים על Moral Foundations Theory (Haidt, 2012) בעיבוד ישראלי.</p>
+</div>
+
+<div id="screen-quiz" class="screen">
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="q-meta">
+    <div class="q-counter" id="q-counter"></div>
+    <div class="q-axis-tag" id="q-axis-tag"></div>
+  </div>
+  <div class="q-text" id="q-text"></div>
+  <div class="q-sub" id="q-sub"></div>
+  <div class="multiselect-hint">בחר/י את מה שמרגיש לך הכי נכון — אפשר לבחור עד 2 תשובות</div>
+  <div class="options-grid" id="options-grid"></div>
+  <button class="continue-btn" id="continue-btn" onclick="confirmSelection()">המשך ←</button>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.6rem;">
+    <button class="back-btn" id="back-btn" onclick="goBack()" style="display:none;">→ חזור אחורה</button>
+    <button class="skip-link" onclick="skipQuestion()" style="flex:1;">אני לא בטוח/ה</button>
+  </div>
+  <div id="skipped-bar" style="display:none;margin-top:1rem;padding:10px 14px;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.25);border-radius:10px;font-size:13px;color:rgba(245,166,35,0.8);text-align:center;"></div>
+</div>
+
+<div id="screen-result" class="screen">
+  <div class="result-eyebrow">הפרופיל שלך</div>
+
+  <div class="archetype-hero">
+    <div class="archetype-name" id="r-archetype-name"></div>
+    <div class="archetype-sub" id="r-archetype-sub"></div>
+    <div class="archetype-foundations" id="r-archetype-foundations"></div>
+  </div>
+
+  <div class="section-label">מפת הארכיטיפים שלך</div>
+  <div class="radar-wrap">
+    <canvas id="result-radar" width="280" height="280" role="img" aria-label="גרף רדאר של 6 ארכיטיפים ערכיים ישראליים"></canvas>
+  </div>
+  <div class="archetype-pills-wrap" id="r-archetype-pills"></div>
+
+  <div class="section-label">מפת הערכים שלך</div>
+  <div class="compass-wrap" id="compass-axes"></div>
+
+  <div class="parties-label">ההתאמות שלך — לפי נתוני CHES-Israel</div>
+  <div id="r-parties"></div>
+
+  <div class="methodology-note">ציוני ההתאמה מחושבים לפי <strong>מרחק אוקלידי משוקלל</strong> על 5 ממדים. מקור: <a href="https://www.chesdata.eu/chesisrael" target="_blank">CHES-Israel 2022</a> (Zur &amp; Bakker, 2023). ארכיטיפים מבוססים על Moral Foundations Theory (Haidt, 2012) בעיבוד ישראלי.</div>
+
+  <div class="share-section">
+    <div class="share-heading">שתף את הפרופיל שלך 🗺️</div>
+    <div class="share-sub">צור כרטיס עם הארכיטיפ, מפת הערכים והמפלגות שלך</div>
+    <div id="share-card-wrap"><canvas id="share-canvas"></canvas></div>
+    <div class="share-btns" id="share-btns-initial">
+      <button class="share-btn primary" onclick="generateAndDownload()">📸 צור כרטיס והורד</button>
+      <button class="share-btn" onclick="copyLink()">🔗 העתק לינק</button>
+    </div>
+    <div class="share-btns" id="share-btns-after" style="display:none;">
+      <a id="download-link" class="share-btn primary" style="text-decoration:none;cursor:pointer;">⬇ הורד שוב</a>
+      <button class="share-btn" onclick="copyLink()">🔗 העתק לינק</button>
+      <button class="share-btn" onclick="startQuiz()">↺ נסה שוב</button>
+    </div>
+    <div id="copy-confirm" style="font-size:12px;color:#00b46e;text-align:center;margin-top:.5rem;display:none;">הלינק הועתק ✓</div>
+  </div>
+
+  <div class="compare-section">
+    <div class="compare-title">📊 השווה עם חבר</div>
+    <div class="compare-sub">שלח את הלינק לחבר — ותגלו אם אתם מסכימים יותר ממה שחשבתם</div>
+    <div style="display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;">
+      <input class="compare-input" id="compare-input" readonly value="טוען..." onclick="this.select()">
+      <button class="share-btn primary" onclick="copyCompareLink()">העתק</button>
+    </div>
+    <div class="compare-copied" id="compare-copied">הועתק! שלח לחבר ✓</div>
+  </div>
+
+  <button class="restart-btn" onclick="startQuiz()">← התחל מחדש</button>
+</div>
+
+</div>
+<script>
+// ── PARTIES (CHES-Israel 2022) ──────────────────────────────────────────────
+const PARTIES=[
+  {id:'democrats',name:'הדמוקרטים',   emoji:'🌹',desc:'שמאל-ציוני | יאיר גולן',          lrgen:2.0,lrecon:2.4,galtan:1.2,ip:1.8,civlib:1.5},
+  {id:'beyachad', name:'ביחד',         emoji:'🤝',desc:'מרכז-שמאל | בנט + לפיד',          lrgen:5.8,lrecon:6.0,galtan:4.8,ip:6.8,civlib:4.8},
+  {id:'yeshatid', name:'יש עתיד',      emoji:'🔷',desc:'מרכז-ליברלי | לפיד',              lrgen:4.8,lrecon:6.0,galtan:2.8,ip:4.8,civlib:4.2},
+  {id:'yashar',   name:'ישר!',          emoji:'🎖️',desc:'מרכז ממלכתי | איזנקוט',           lrgen:5.0,lrecon:5.5,galtan:3.8,ip:5.2,civlib:3.8},
+  {id:'statecamp',name:'המחנה הממלכתי',emoji:'💙',desc:'מרכז-ימין ביטחוני | גנץ',         lrgen:5.4,lrecon:5.6,galtan:4.2,ip:5.3,civlib:5.1},
+  {id:'yb',       name:'ישראל ביתנו',  emoji:'🟦',desc:'ימין חילוני | ליברמן',            lrgen:6.6,lrecon:7.0,galtan:4.6,ip:6.9,civlib:7.1},
+  {id:'likud',    name:'הליכוד',       emoji:'🔵',desc:'ימין לאומי | נתניהו',             lrgen:7.8,lrecon:6.3,galtan:7.2,ip:8.1,civlib:8.0},
+  {id:'shas',     name:'ש"ס',          emoji:'🕍',desc:'ימין דתי-ספרדי | דרעי',           lrgen:7.8,lrecon:3.0,galtan:9.6,ip:8.2,civlib:7.4},
+  {id:'utj',      name:'יהדות התורה',  emoji:'📖',desc:'חרדי אשכנזי',                     lrgen:7.3,lrecon:3.0,galtan:9.8,ip:7.8,civlib:6.8},
+  {id:'rz',       name:'הציונות הדתית', emoji:'✡️', desc:'ימין דתי-לאומי | סמוטריץ׳',       lrgen:9.7,lrecon:7.7,galtan:9.5,ip:9.8,civlib:9.4},
+  {id:'otzma',    name:'עוצמה יהודית',  emoji:'🔥', desc:'ימין לאומי קיצוני | בן גביר',      lrgen:10.0,lrecon:7.0,galtan:9.8,ip:10.0,civlib:10.0},
+  {id:'raam',     name:'רע"מ',         emoji:'🌙',desc:'ערבית-איסלאמית | עבאס',           lrgen:3.2,lrecon:3.3,galtan:8.1,ip:0.7,civlib:4.7},
+  {id:'hadash',   name:'חד"ש-תע"ל',    emoji:'🌍',desc:'שמאל ערבי-יהודי משותף',           lrgen:1.1,lrecon:1.7,galtan:3.9,ip:0.4,civlib:1.6}
+];
+const DIMS=['lrgen','lrecon','galtan','ip','civlib'];
+const WEIGHTS={lrgen:2,lrecon:1,galtan:2,ip:3,civlib:2};
+
+// ── VALUE AXES ───────────────────────────────────────────────────────────────
+const AXES=[
+  {id:'liberty', label:'חירות ↔ סדר',    poleL:'חירות הפרט',poleR:'הכלל קודם',  color:'#00b46e'},
+  {id:'equality',label:'שוויון ↔ שוק',   poleL:'מדינת רווחה',poleR:'שוק חופשי', color:'#4a9eff'},
+  {id:'identity',label:'זהות ↔ פלורליזם',poleL:'פלורליסטי', poleR:'זהות יהודית',color:'#f5a623'},
+  {id:'security',label:'שלום ↔ כוח',     poleL:'דיאלוג',    poleR:'כוח וביטחון',color:'#e05c5c'},
+  {id:'religion',label:'חילוני ↔ דתי',   poleL:'חילוני',    poleR:'דתי-מסורתי', color:'#b07af5'}
+];
+
+// ── ARCHETYPES (Haidt MFT adapted for Israel) ────────────────────────────────
+// foundations: rachamin(care), mishpat(fairness), brit(loyalty), magen(authority), kodesh(sanctity), herut(liberty)
+const ARCHETYPES=[
+  {id:'prophet', name:'הנביא',  color:'#7F77DD',foundations:'רחמים + משפט',  sub:'מדבר אמת לשלטון ודואג לחלש — מאמין שצדק הוא הבסיס לכל ביטחון אמיתי'},
+  {id:'warrior', name:'הלוחם',  color:'#E24B4A',foundations:'ברית + מגן',    sub:'שומר על העם ולא מתפשר — מאמין שחוזק הוא התנאי הראשון לכל שגשוג'},
+  {id:'priest',  name:'הכהן',   color:'#EF9F27',foundations:'קודש + ברית',   sub:'שומר הזהות והמסורת — מאמין שהשורשים הם הבסיס לכל עתיד'},
+  {id:'judge',   name:'השופט',  color:'#378ADD',foundations:'משפט + חירות',  sub:'שלטון חוק ושקיפות — מאמין שהחוק חל על כולם בשווה, ללא יוצא מן הכלל'},
+  {id:'king',    name:'המלך',   color:'#1D9E75',foundations:'מגן + משפט',    sub:'סדר, יציבות וניהול אחראי — מוביל בנחישות ומשרת את המדינה לפני הכל'},
+  {id:'shepherd',name:'הרועה',  color:'#D4537E',foundations:'רחמים + חירות', sub:'קהילה, דאגה וכבוד לכל אחד — מאמין בחיבור, לא בכפייה'}
+];
+
+// ── QUESTIONS ────────────────────────────────────────────────────────────────
+// val: value axes (liberty,equality,identity,security,religion)
+// arc: archetype scores (rachamin,mishpat,brit,magen,kodesh,herut)
+const questions=[
+  {
+    text:"כשאדם נולד לעוני — זה באחריות מי?",
+    sub:"שאלה על מוסר, לא על פוליטיקה",axisTag:"שוויון ↔ שוק",
+    options:[
+      {emoji:"🤲",label:"החברה כולה — המדינה חייבת לפצות על פערים מולדים",
+        pos:{lrgen:2,lrecon:2,galtan:3,ip:4,civlib:2},val:{equality:-2},arc:{rachamin:3,mishpat:2}},
+      {emoji:"💪",label:"כל אחד בונה את עצמו — האחריות היא אישית",
+        pos:{lrgen:7,lrecon:8,galtan:6,ip:6,civlib:6},val:{equality:2},arc:{herut:3,magen:1}},
+      {emoji:"⚖️",label:"רשת ביטחון בסיסית — השאר בידי הפרט",
+        pos:{lrgen:6,lrecon:6,galtan:5,ip:5,civlib:5},val:{equality:1},arc:{mishpat:2,herut:2}},
+      {emoji:"🏛️",label:"כללי משחק הוגנים — אחר כך כל אחד לבד",
+        pos:{lrgen:5,lrecon:5,galtan:4,ip:5,civlib:4},val:{equality:0},arc:{mishpat:3}}
+    ]
+  },
+  {
+    text:"מה גורם לחברה לתפקד טוב יותר?",
+    sub:"בחר את מה שמרגיש לך אמיתי",axisTag:"חירות ↔ סדר",
+    options:[
+      {emoji:"🕊️",label:"אנשים חופשיים שעושים את שלהם — פחות מדינה, יותר פרט",
+        pos:{lrgen:3,lrecon:7,galtan:2,ip:3,civlib:1},val:{liberty:-2,equality:1},arc:{herut:3}},
+      {emoji:"🏗️",label:"חוקים חזקים ומדינה שמגינה — בלי זה הכל מתפרק",
+        pos:{lrgen:6,lrecon:3,galtan:6,ip:5,civlib:6},val:{liberty:2,equality:-1},arc:{magen:3,mishpat:1}},
+      {emoji:"🤝",label:"קהילה — כשאנשים דואגים אחד לשני",
+        pos:{lrgen:4,lrecon:3,galtan:5,ip:4,civlib:3},val:{liberty:0,equality:-1},arc:{rachamin:3,brit:2}},
+      {emoji:"📋",label:"כללים ברורים שחלים על כולם בשווה",
+        pos:{lrgen:5,lrecon:5,galtan:5,ip:5,civlib:5},val:{liberty:1},arc:{mishpat:3}}
+    ]
+  },
+  {
+    text:"מתי מוצדק לוותר על חופש אישי?",
+    sub:"אחת השאלות היסודיות בפילוסופיה פוליטית",axisTag:"חירות ↔ סדר",
+    options:[
+      {emoji:"🚫",label:"כמעט אף פעם — החירות האישית היא ערך עליון",
+        pos:{lrgen:2,lrecon:5,galtan:1,ip:2,civlib:1},val:{liberty:-2},arc:{herut:3}},
+      {emoji:"🛡️",label:"כשביטחון הכלל בסכנה — זה מצדיק מגבלות",
+        pos:{lrgen:6,lrecon:5,galtan:6,ip:7,civlib:6},val:{liberty:2,security:1},arc:{magen:3,brit:2}},
+      {emoji:"🤲",label:"כשהוויתור מסייע למי שנולד לנסיבות קשות יותר",
+        pos:{lrgen:3,lrecon:2,galtan:3,ip:3,civlib:2},val:{liberty:1,equality:-1},arc:{rachamin:3}},
+      {emoji:"📖",label:"כשהמסורת והתרבות של עמנו מחייבת זאת",
+        pos:{lrgen:6,lrecon:4,galtan:8,ip:5,civlib:7},val:{liberty:1,religion:2},arc:{kodesh:3,brit:2}}
+    ]
+  },
+  {
+    text:"מהגר שהגיע לישראל לפני עשר שנים — מה מגיע לו?",
+    sub:"שאלה על שייכות וזהות לאומית",axisTag:"זהות ↔ פלורליזם",
+    options:[
+      {emoji:"🌍",label:"זכויות מלאות — כמו לכל אזרח אחר",
+        pos:{lrgen:2,lrecon:3,galtan:2,ip:2,civlib:1},val:{identity:-2},arc:{rachamin:2,mishpat:3}},
+      {emoji:"📝",label:"תלוי: האם שירת? תרם? השתלב?",
+        pos:{lrgen:5,lrecon:5,galtan:5,ip:5,civlib:5},val:{identity:0},arc:{mishpat:2,brit:2}},
+      {emoji:"🔒",label:"זכויות בסיסיות — אבל לא אותו מעמד כמו ילידי הארץ",
+        pos:{lrgen:6,lrecon:5,galtan:7,ip:6,civlib:6},val:{identity:1},arc:{brit:2,magen:2}},
+      {emoji:"✡️",label:"לחיות בארץ ישראל — זו עצמה זכות שלא מובנת מאליה",
+        pos:{lrgen:8,lrecon:5,galtan:8,ip:7,civlib:7},val:{identity:2},arc:{kodesh:3,brit:3}}
+    ]
+  },
+  {
+    text:"ישראל — מהי בעיניך?",
+    sub:"בחר את ההגדרה שהכי מהדהדת לך",axisTag:"זהות ↔ פלורליזם",
+    options:[
+      {emoji:"✡️",label:"המדינה היהודית — זה הבסיס, לפני הכל",
+        pos:{lrgen:8,lrecon:5,galtan:9,ip:8,civlib:8},val:{identity:2,religion:1},arc:{kodesh:3,brit:3}},
+      {emoji:"🌍",label:"דמוקרטיה ליברלית שקורה להיות במזרח התיכון",
+        pos:{lrgen:3,lrecon:5,galtan:1,ip:3,civlib:1},val:{identity:-2},arc:{herut:3,mishpat:2}},
+      {emoji:"🤝",label:"יהודית ודמוקרטית — שניהם, בלי לבחור",
+        pos:{lrgen:5,lrecon:5,galtan:5,ip:5,civlib:4},val:{identity:0},arc:{brit:2,mishpat:2}},
+      {emoji:"🏘️",label:"מדינה של כל מי שגדל כאן, שירת ושילם מיסים",
+        pos:{lrgen:2,lrecon:4,galtan:3,ip:3,civlib:2},val:{identity:-1},arc:{mishpat:2,rachamin:2}}
+    ]
+  },
+  {
+    text:"דת ומדינה — מה הקשר הנכון?",
+    sub:"אחת השאלות הכי מפצלות בחברה הישראלית",axisTag:"חילוני ↔ דתי",
+    options:[
+      {emoji:"🔓",label:"הפרדה מוחלטת — הדת היא ענין פרטי",
+        pos:{lrgen:3,lrecon:5,galtan:1,ip:3,civlib:1},val:{religion:-2,liberty:-1},arc:{herut:3}},
+      {emoji:"🕍",label:"ההלכה היא הצפן המוסרי שלנו — גם כמדינה",
+        pos:{lrgen:7,lrecon:3,galtan:10,ip:7,civlib:8},val:{religion:2,liberty:1},arc:{kodesh:3,brit:2}},
+      {emoji:"🌿",label:"כבוד למסורת — אבל ללא כפייה",
+        pos:{lrgen:4,lrecon:4,galtan:4,ip:4,civlib:3},val:{religion:1},arc:{kodesh:1,herut:1}},
+      {emoji:"⚖️",label:"הדת חלק מהזהות הלאומית — לא מהחוק האזרחי",
+        pos:{lrgen:5,lrecon:5,galtan:5,ip:5,civlib:4},val:{religion:0,identity:1},arc:{brit:2,mishpat:2}}
+    ]
+  },
+  {
+    text:"מה מפריע לך יותר?",
+    sub:"בחר את מה שמציק לך יותר מבין השניים",axisTag:"חירות ↔ סדר",
+    options:[
+      {emoji:"😤",label:"מדינה שמכתיבה לי איך לחיות ומה לחשוב",
+        pos:{lrgen:2,lrecon:5,galtan:1,ip:3,civlib:1},val:{liberty:-2},arc:{herut:3}},
+      {emoji:"😰",label:"חברה ללא כללים שבה החלשים נשכחים",
+        pos:{lrgen:4,lrecon:2,galtan:4,ip:4,civlib:3},val:{liberty:1,equality:-1},arc:{rachamin:2,magen:2}},
+      {emoji:"😡",label:"שחיתות — כשהחוק חל על חלקם ולא על אחרים",
+        pos:{lrgen:3,lrecon:4,galtan:3,ip:4,civlib:1},val:{liberty:0},arc:{mishpat:3}},
+      {emoji:"😟",label:"חברה שמאבדת את הזהות והמסורת שלה",
+        pos:{lrgen:7,lrecon:5,galtan:7,ip:6,civlib:6},val:{identity:2,religion:1},arc:{kodesh:3,brit:2}}
+    ]
+  },
+  {
+    text:"מה באמת מביא שלום?",
+    sub:"לא מה שרצוי — מה שעובד",axisTag:"שלום ↔ כוח",
+    options:[
+      {emoji:"💬",label:"דיאלוג ופשרות — בסוף אין ברירה אחרת",
+        pos:{lrgen:2,lrecon:4,galtan:2,ip:1,civlib:2},val:{security:-2},arc:{rachamin:2,mishpat:2}},
+      {emoji:"🛡️",label:"חוזק — רק מי שחזק יכול להשיג שלום",
+        pos:{lrgen:7,lrecon:6,galtan:7,ip:8,civlib:7},val:{security:2},arc:{magen:3,brit:2}},
+      {emoji:"🤝",label:"שילוב — ביטחון חזק ונכונות לשיח",
+        pos:{lrgen:5,lrecon:5,galtan:5,ip:5,civlib:4},val:{security:0},arc:{magen:2,mishpat:1}},
+      {emoji:"⏳",label:"עכשיו לא הזמן — קודם צריך ביטחון",
+        pos:{lrgen:6,lrecon:5,galtan:6,ip:7,civlib:5},val:{security:1},arc:{magen:2}}
+    ]
+  },
+  {
+    text:"הסכסוך עם הפלסטינים — לאן?",
+    sub:"אין תשובה נכונה אחת. מה הכיוון שאתה/י מאמין/ה בו?",axisTag:"שלום ↔ כוח",
+    options:[
+      {emoji:"🗺️",label:"שתי מדינות — בסוף זה הפתרון היחיד",
+        pos:{lrgen:2,lrecon:4,galtan:2,ip:1,civlib:2},val:{security:-2,identity:-1},arc:{rachamin:2,mishpat:2}},
+      {emoji:"🔒",label:"ריבונות ישראלית מלאה ביו\"ש — הארץ הזו שלנו",
+        pos:{lrgen:9,lrecon:7,galtan:8,ip:10,civlib:8},val:{security:2,identity:2},arc:{brit:3,kodesh:3,magen:2}},
+      {emoji:"⏳",label:"לא עכשיו — ביטחון קודם לכל",
+        pos:{lrgen:6,lrecon:6,galtan:6,ip:7,civlib:6},val:{security:1},arc:{magen:3}},
+      {emoji:"💬",label:"שיח מציאותי — בלי אשליות ובלי דיכוי",
+        pos:{lrgen:5,lrecon:5,galtan:4,ip:5,civlib:4},val:{security:-1},arc:{mishpat:2,rachamin:1}}
+    ]
+  },
+  {
+    text:"7 באוקטובר — מה המסקנה הכי חשובה?",
+    sub:"שאלה כואבת שאי אפשר לעקור ממנה",axisTag:"שלום ↔ כוח",
+    options:[
+      {emoji:"🛡️",label:"ישראל חייבת להיות הרבה יותר חזקה — ופחות תלויה בעולם",
+        pos:{lrgen:8,lrecon:6,galtan:7,ip:9,civlib:7},val:{security:2,identity:1},arc:{magen:3,brit:2}},
+      {emoji:"🔍",label:"כישלון הנהגה — צריך חקירה ואחריות",
+        pos:{lrgen:4,lrecon:5,galtan:4,ip:5,civlib:2},val:{security:0},arc:{mishpat:3}},
+      {emoji:"🌱",label:"ישראל חייבת לפתור את הסכסוך — זה לא יכול להמשיך",
+        pos:{lrgen:2,lrecon:4,galtan:2,ip:2,civlib:2},val:{security:-2},arc:{rachamin:2,mishpat:2}},
+      {emoji:"🤲",label:"השסעים הפנימיים הם שברו אותנו לפני שהמחבלים הגיעו",
+        pos:{lrgen:5,lrecon:5,galtan:5,ip:6,civlib:4},val:{security:1,liberty:1},arc:{brit:3,rachamin:2}}
+    ]
+  },
+  {
+    text:"שוויון בנטל — חרדים וצבא",
+    sub:"אחד המתחים הכואבים ביותר בישראל",axisTag:"חילוני ↔ דתי",
+    options:[
+      {emoji:"✊",label:"גיוס חובה לכולם — שוויון בנטל, ללא יוצאים מן הכלל",
+        pos:{lrgen:4,lrecon:5,galtan:3,ip:5,civlib:2},val:{religion:-2,equality:-1},arc:{mishpat:3,magen:2}},
+      {emoji:"📖",label:"לומדי תורה תורמים בדרכם — הפטור מוצדק",
+        pos:{lrgen:7,lrecon:3,galtan:10,ip:7,civlib:8},val:{religion:2},arc:{kodesh:3,brit:2}},
+      {emoji:"🤝",label:"שירות לאומי-אזרחי — חלופה אמיתית ושוויונית",
+        pos:{lrgen:5,lrecon:5,galtan:4,ip:5,civlib:4},val:{religion:-1},arc:{mishpat:2,brit:1}},
+      {emoji:"🕊️",label:"צריך הסכם חברתי חדש — לא כפייה חד-צדדית",
+        pos:{lrgen:5,lrecon:5,galtan:5,ip:5,civlib:5},val:{religion:0},arc:{mishpat:2,rachamin:1}}
+    ]
+  },
+  {
+    text:"בית המשפט העליון — בלם או חריג?",
+    sub:"הסוגיה שחילקה את ישראל ב-2023",axisTag:"חירות ↔ סדר",
+    options:[
+      {emoji:"⚖️",label:"בלם הכרחי — בלעדיו הדמוקרטיה חשופה",
+        pos:{lrgen:2,lrecon:4,galtan:2,ip:3,civlib:1},val:{liberty:-1},arc:{mishpat:3,herut:2}},
+      {emoji:"🗳️",label:"העם בחר בנבחרים — הם הריבון, לא השופטים",
+        pos:{lrgen:8,lrecon:6,galtan:7,ip:7,civlib:8},val:{liberty:1,identity:1},arc:{brit:2,magen:2}},
+      {emoji:"🧩",label:"צריך איזון חדש — לא קיצוניות לשני הכיוונים",
+        pos:{lrgen:5,lrecon:5,galtan:5,ip:5,civlib:5},val:{},arc:{mishpat:2}},
+      {emoji:"🔄",label:"רפורמה — אבל רק בהסכמה רחבה",
+        pos:{lrgen:5,lrecon:5,galtan:4,ip:5,civlib:4},val:{},arc:{mishpat:1,brit:1}}
+    ]
+  },
+  {
+    text:"זכויות להט\"ב — איפה את/ה עומד/ת?",
+    sub:"בחר/י את המשפט שהכי מייצג אותך",axisTag:"חילוני ↔ דתי",
+    options:[
+      {emoji:"🌈",label:"שוויון מלא בחוק ובמעשה — זה לא עומד לדיון",
+        pos:{lrgen:2,lrecon:3,galtan:1,ip:2,civlib:1},val:{religion:-2,liberty:-2},arc:{herut:3,mishpat:3}},
+      {emoji:"🤝",label:"כבוד לכל אדם — אבל לא תפקיד המדינה לקדם",
+        pos:{lrgen:5,lrecon:5,galtan:5,ip:5,civlib:5},val:{religion:1},arc:{herut:1,kodesh:1}},
+      {emoji:"📖",label:"ערכים יהודיים-מסורתיים מנחים אותי בסוגיה זו",
+        pos:{lrgen:7,lrecon:5,galtan:9,ip:7,civlib:8},val:{religion:2,liberty:1},arc:{kodesh:3,brit:2}},
+      {emoji:"🔒",label:"ענין פרטי לחלוטין — המדינה לא צריכה להתערב",
+        pos:{lrgen:4,lrecon:5,galtan:4,ip:4,civlib:4},val:{religion:0,liberty:-1},arc:{herut:2}}
+    ]
+  },
+  {
+    text:"מה מטריד אותך הכי הרבה?",
+    sub:"הבעיה שחוזרת אליך שוב ושוב",axisTag:"סדרי עדיפויות",
+    options:[
+      {emoji:"💰",label:"אי אפשר לחיות בכבוד מהמשכורת — יוקר המחייה מחניק",
+        pos:{lrgen:3,lrecon:2,galtan:4,ip:4,civlib:3},val:{equality:-2},arc:{rachamin:3}},
+      {emoji:"🔐",label:"האיומים לא נעלמו — אנחנו עדיין לא מאובטחים",
+        pos:{lrgen:7,lrecon:6,galtan:6,ip:8,civlib:7},val:{security:2},arc:{magen:3,brit:2}},
+      {emoji:"🌱",label:"האקלים קורס ואף אחד לא מדבר על זה ברצינות",
+        pos:{lrgen:2,lrecon:3,galtan:2,ip:3,civlib:2},val:{equality:-1,liberty:-1},arc:{rachamin:2,mishpat:1}},
+      {emoji:"📚",label:"הפערים בחינוך הורגים את עתיד הילדים שלנו",
+        pos:{lrgen:3,lrecon:3,galtan:3,ip:4,civlib:2},val:{equality:-2},arc:{rachamin:3,mishpat:1}}
+    ]
+  },
+  {
+    text:"יש לך שרביט קסמים — מה אתה/י עושה/ה ראשון?",
+    sub:"קיצור הדרך הישיר לערכים שלך",axisTag:"סדרי עדיפויות",
+    options:[
+      {emoji:"🕊️",label:"חותם/ת על הסכם שלום יציב ומוכר",
+        pos:{lrgen:2,lrecon:4,galtan:2,ip:1,civlib:2},val:{security:-2,identity:-1},arc:{rachamin:2,mishpat:2}},
+      {emoji:"💵",label:"הופך/ת דיור לנגיש לכל משפחה",
+        pos:{lrgen:3,lrecon:2,galtan:4,ip:4,civlib:3},val:{equality:-2},arc:{rachamin:3}},
+      {emoji:"⚖️",label:"שולח/ת את כל השחיתים לכלא — ללא יוצא מן הכלל",
+        pos:{lrgen:3,lrecon:5,galtan:3,ip:4,civlib:1},val:{liberty:0},arc:{mishpat:3}},
+      {emoji:"🛡️",label:"מבטיח/ה שאף אויב לא יעז לגעת בנו שוב",
+        pos:{lrgen:8,lrecon:6,galtan:7,ip:9,civlib:7},val:{security:2,identity:1},arc:{magen:3,brit:2}}
+    ]
+  }
+];
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let currentQ=0,answerCount=0,userScores={},axisScores={},arcScores={};
+let history=[],skippedQs=new Set(),selectedIndices=new Set();
+let radarChart=null;
+
+function resetState(){
+  currentQ=0;answerCount=0;userScores={};axisScores={};arcScores={};
+  history=[];skippedQs=new Set();selectedIndices=new Set();
+  DIMS.forEach(d=>userScores[d]=0);
+  AXES.forEach(a=>axisScores[a.id]=0);
+  ['rachamin','mishpat','brit','magen','kodesh','herut'].forEach(k=>arcScores[k]=0);
+  document.getElementById('share-card-wrap').style.display='none';
+  document.getElementById('share-btns-initial').style.display='flex';
+  document.getElementById('share-btns-after').style.display='none';
+  document.getElementById('copy-confirm').style.display='none';
+}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function startQuiz(){resetState();renderQuestion();show('screen-quiz');}
+
+function renderQuestion(){
+  const q=questions[currentQ],total=questions.length;
+  document.getElementById('q-counter').textContent='שאלה '+(currentQ+1)+' מתוך '+total;
+  document.getElementById('q-axis-tag').textContent=q.axisTag||'';
+  document.getElementById('q-text').textContent=q.text;
+  document.getElementById('q-sub').textContent=q.sub||'';
+  document.getElementById('progress-fill').style.width=((currentQ/total)*100)+'%';
+  selectedIndices=new Set();
+  document.getElementById('continue-btn').style.display='none';
+  document.getElementById('back-btn').style.display=history.length>0?'block':'none';
+  const skippedBefore=[...skippedQs].filter(q=>q<currentQ);
+  const sb=document.getElementById('skipped-bar');
+  if(skippedBefore.length>0){sb.style.display='block';sb.textContent='דילגת על '+skippedBefore.length+' שאלה'+(skippedBefore.length>1?'ות':'')+' — תוכל/י לחזור ולענות עליה'+(skippedBefore.length>1?'ן':'');}
+  else sb.style.display='none';
+  const grid=document.getElementById('options-grid');
+  grid.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='option-btn';
+    btn.innerHTML='<span class="opt-emoji">'+opt.emoji+'</span>'+opt.label;
+    btn.onclick=()=>toggleOption(i);
+    grid.appendChild(btn);
+  });
+}
+
+function toggleOption(idx){
+  const btns=document.querySelectorAll('.option-btn');
+  if(selectedIndices.has(idx)){selectedIndices.delete(idx);btns[idx].classList.remove('selected');}
+  else{if(selectedIndices.size>=2)return;selectedIndices.add(idx);btns[idx].classList.add('selected');}
+  document.getElementById('continue-btn').style.display=selectedIndices.size>0?'block':'none';
+  btns.forEach((btn,i)=>{
+    if(selectedIndices.size>=2&&!selectedIndices.has(i)){btn.style.opacity='0.35';btn.style.pointerEvents='none';}
+    else{btn.style.opacity='';btn.style.pointerEvents='';}
+  });
+}
+
+function confirmSelection(){
+  if(selectedIndices.size===0)return;
+  history.push({q:currentQ,userScores:{...userScores},axisScores:{...axisScores},arcScores:{...arcScores},answerCount,wasSkipped:skippedQs.has(currentQ)});
+  const opts=questions[currentQ].options,count=selectedIndices.size;
+  selectedIndices.forEach(idx=>{
+    const opt=opts[idx];
+    DIMS.forEach(d=>{userScores[d]+=opt.pos[d]/count;});
+    if(opt.val)Object.entries(opt.val).forEach(([a,v])=>{if(axisScores[a]!==undefined)axisScores[a]+=v/count;});
+    if(opt.arc)Object.entries(opt.arc).forEach(([a,v])=>{if(arcScores[a]!==undefined)arcScores[a]+=v/count;});
+  });
+  answerCount++;skippedQs.delete(currentQ);selectedIndices=new Set();
+  nextQuestion();
+}
+
+function skipQuestion(){
+  history.push({q:currentQ,userScores:{...userScores},axisScores:{...axisScores},arcScores:{...arcScores},answerCount,wasSkipped:false});
+  skippedQs.add(currentQ);selectedIndices=new Set();
+  document.getElementById('continue-btn').style.display='none';
+  nextQuestion();
+}
+
+function goBack(){
+  if(history.length===0)return;
+  const prev=history.pop();
+  currentQ=prev.q;userScores={...prev.userScores};axisScores={...prev.axisScores};arcScores={...prev.arcScores};answerCount=prev.answerCount;
+  if(prev.wasSkipped)skippedQs.add(currentQ);else skippedQs.delete(currentQ);
+  selectedIndices=new Set();renderQuestion();
+}
+
+function nextQuestion(){currentQ++;if(currentQ>=questions.length)showResult();else renderQuestion();}
+
+// ── RESULT ───────────────────────────────────────────────────────────────────
+function showResult(){
+  // 1. CHES party matching
+  const avg={};DIMS.forEach(d=>avg[d]=answerCount>0?userScores[d]/answerCount:5);
+  const maxDist=10*Math.sqrt(DIMS.reduce((s,d)=>s+WEIGHTS[d]*WEIGHTS[d],0));
+  const ranked=PARTIES.map(p=>{
+    let d2=0;DIMS.forEach(d=>{const diff=(avg[d]-p[d])*WEIGHTS[d];d2+=diff*diff;});
+    return{party:p,pct:Math.round(100*(1-Math.sqrt(d2)/maxDist))};
+  }).sort((a,b)=>b.pct-a.pct);
+
+  // 2. Archetype scores → normalize to 0-100
+  // Map foundations to archetype scores
+  // prophet=rachamin+mishpat, warrior=brit+magen, priest=kodesh+brit
+  // judge=mishpat+herut, king=magen+mishpat, shepherd=rachamin+herut
+  const foundationToArc={
+    prophet: arcScores.rachamin*0.55 + arcScores.mishpat*0.45,
+    warrior: arcScores.brit*0.5   + arcScores.magen*0.5,
+    priest:  arcScores.kodesh*0.6 + arcScores.brit*0.4,
+    judge:   arcScores.mishpat*0.5+ arcScores.herut*0.5,
+    king:    arcScores.magen*0.6  + arcScores.mishpat*0.4,
+    shepherd:arcScores.rachamin*0.6+arcScores.herut*0.4
+  };
+  const arcOrder=['prophet','warrior','priest','judge','king','shepherd'];
+  const maxArc=Math.max(...arcOrder.map(k=>foundationToArc[k]))||1;
+  const arcPcts=arcOrder.map(k=>Math.round((foundationToArc[k]/maxArc)*100));
+  const sortedArc=[...arcPcts.map((v,i)=>({v,i}))].sort((a,b)=>b.v-a.v);
+  const topArc=ARCHETYPES[sortedArc[0].i];
+  const secArc=ARCHETYPES[sortedArc[1].i];
+
+  // 3. Archetype hero
+  document.getElementById('r-archetype-name').innerHTML=
+    topArc.name+'<span class="secondary"> — '+secArc.name+'</span>';
+  document.getElementById('r-archetype-sub').textContent=topArc.sub;
+  document.getElementById('r-archetype-foundations').textContent='יסודות: '+topArc.foundations;
+
+  // 4. Radar chart
+  if(radarChart){radarChart.destroy();radarChart=null;}
+  const ctx=document.getElementById('result-radar').getContext('2d');
+  const isDark=true;
+  radarChart=new Chart(ctx,{
+    type:'radar',
+    data:{
+      labels:ARCHETYPES.map(a=>a.name),
+      datasets:[{
+        data:arcPcts,
+        backgroundColor:topArc.color+'20',
+        borderColor:topArc.color,
+        borderWidth:2.5,
+        pointBackgroundColor:ARCHETYPES.map(a=>a.color),
+        pointBorderColor:ARCHETYPES.map(a=>a.color),
+        pointRadius:5,pointHoverRadius:7
+      }]
+    },
+    options:{
+      responsive:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
+      scales:{r:{
+        min:0,max:100,
+        ticks:{stepSize:25,color:'rgba(240,236,224,0.3)',font:{size:10},backdropColor:'transparent'},
+        grid:{color:'rgba(255,255,255,0.08)'},
+        angleLines:{color:'rgba(255,255,255,0.08)'},
+        pointLabels:{color:'rgba(240,236,224,0.8)',font:{size:13,weight:'700'}}
+      }}
+    }
+  });
+
+  // 5. Archetype pills
+  const pillsWrap=document.getElementById('r-archetype-pills');
+  pillsWrap.innerHTML='';
+  sortedArc.forEach((item,rank)=>{
+    const a=ARCHETYPES[item.i];
+    const pill=document.createElement('div');
+    pill.className='archetype-pill'+(rank===0?' top1':rank===1?' top2':'');
+    if(rank<2)pill.style.color=a.color,pill.style.borderColor=a.color+'66',pill.style.background=a.color+'12';
+    pill.textContent=a.name+' '+item.v+'%';
+    pillsWrap.appendChild(pill);
+  });
+
+  // 6. Value axes compass
+  const axesDiv=document.getElementById('compass-axes');axesDiv.innerHTML='';
+  const maxAx=questions.length*2;
+  AXES.forEach(axis=>{
+    const raw=axisScores[axis.id]||0;
+    const pct=Math.round(Math.max(0,Math.min(100,50+(raw/maxAx)*50)));
+    const row=document.createElement('div');row.className='axis-row';
+    row.innerHTML=`<div class="axis-name">${axis.label}</div>
+      <div class="axis-poles"><span>${axis.poleL}</span><span>${axis.poleR}</span></div>
+      <div class="axis-track">
+        <div style="position:absolute;top:0;left:0;height:100%;width:${pct}%;background:${axis.color}18;border-radius:99px;"></div>
+        <div class="axis-dot" style="left:${pct}%;background:${axis.color};box-shadow:0 0 8px ${axis.color}80;"></div>
+      </div>`;
+    axesDiv.appendChild(row);
+  });
+
+  // 7. Party list
+  const pd=document.getElementById('r-parties');pd.innerHTML='';
+  const topPct=ranked[0].pct;
+  ranked.forEach((item,i)=>{
+    const p=item.party,isTop=i===0,isBottom=i===ranked.length-1;
+    const barW=Math.round((item.pct/topPct)*100);
+    const card=document.createElement('div');
+    card.className='party-card'+(isTop?' top-match':isBottom?' bottom-match':'');
+    card.innerHTML='<div class="party-rank">'+(i+1)+'</div>'+
+      '<div class="party-badge">'+p.emoji+'</div>'+
+      '<div class="party-info">'+
+        '<div class="party-name">'+p.name+(isTop?' ★':isBottom?' ✗':'')+'</div>'+
+        '<div class="party-bar-wrap"><div class="party-bar" style="width:'+barW+'%;background:'+(isTop?'#00b46e':isBottom?'#e05c5c':'rgba(240,236,224,0.18)')+'"></div></div>'+
+      '</div>'+
+      '<div class="match-pct" style="color:'+(isTop?'#00b46e':isBottom?'#e05c5c':'rgba(240,236,224,0.7)')+'">'+item.pct+'<span>%</span></div>';
+    pd.appendChild(card);
+  });
+
+  // Save for share card
+  window._archetypeName=topArc.name+' — '+secArc.name;
+  window._archetypeColor=topArc.color;
+  window._arcPcts=arcPcts;
+  window._top3=ranked.slice(0,3).map(r=>({name:r.party.name,emoji:r.party.emoji,desc:r.party.desc,pct:r.pct}));
+  window._axisData=AXES.map(axis=>{
+    const raw=axisScores[axis.id]||0;
+    const pct=Math.round(Math.max(0,Math.min(100,50+(raw/maxAx)*50)));
+    return{label:axis.label,poleL:axis.poleL,poleR:axis.poleR,color:axis.color,pct};
+  });
+  document.getElementById('compare-input').value=window.location.href;
+  show('screen-result');
+}
+
+// ── SHARE CARD ────────────────────────────────────────────────────────────────
+function generateAndDownload(){
+  const canvas=document.getElementById('share-canvas');
+  const ctx=canvas.getContext('2d');
+  const W=800,H=980;canvas.width=W;canvas.height=H;
+  const arcPcts=window._arcPcts||[];
+  const axisData=window._axisData||[];
+  const top3=window._top3||[];
+  const arcColor=window._archetypeColor||'#00b46e';
+  const arcName=window._archetypeName||'';
+  const axisColors=['#00b46e','#4a9eff','#f5a623','#e05c5c','#b07af5'];
+  const arcColors=ARCHETYPES.map(a=>a.color);
+
+  ctx.fillStyle='#0d0d0d';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(255,255,255,0.03)';
+  for(let x=40;x<W;x+=60)for(let y=40;y<H;y+=60){ctx.beginPath();ctx.arc(x,y,1.5,0,Math.PI*2);ctx.fill();}
+  const bar=ctx.createLinearGradient(0,0,W,0);bar.addColorStop(0,arcColor);bar.addColorStop(1,arcColor+'99');
+  ctx.fillStyle=bar;ctx.fillRect(0,0,W,5);
+  ctx.font='bold 20px Arial';ctx.fillStyle='rgba(240,236,224,0.4)';ctx.textAlign='right';
+  ctx.fillText('🗳️ בעד מי את/ה באמת? | בחירות 2026',W-48,55);
+  ctx.fillStyle='rgba(255,255,255,0.07)';ctx.fillRect(48,70,W-96,1);
+  ctx.font='bold 54px Arial';ctx.fillStyle='#f0ece0';ctx.textAlign='right';
+  ctx.fillText(arcName,W-48,140);
+  ctx.fillStyle='rgba(255,255,255,0.07)';ctx.fillRect(48,160,W-96,1);
+
+  // Radar
+  const CX=W/2,CY=310,R=140;
+  const arcAngles=ARCHETYPES.map((_,i)=>(-Math.PI/2)+(i/6)*Math.PI*2);
+  ctx.font='bold 15px Arial';ctx.fillStyle='rgba(240,236,224,0.35)';ctx.textAlign='right';
+  ctx.fillText('מפת הארכיטיפים',W-48,190);
+  [25,50,75,100].forEach(level=>{
+    ctx.beginPath();ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;
+    arcAngles.forEach((angle,i)=>{const r=R*(level/100),x=CX+r*Math.cos(angle),y=CY+r*Math.sin(angle);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+    ctx.closePath();ctx.stroke();
+  });
+  arcAngles.forEach(angle=>{ctx.beginPath();ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;ctx.moveTo(CX,CY);ctx.lineTo(CX+R*Math.cos(angle),CY+R*Math.sin(angle));ctx.stroke();});
+  ctx.beginPath();ctx.fillStyle=arcColor+'18';ctx.strokeStyle=arcColor;ctx.lineWidth=2.5;
+  arcAngles.forEach((angle,i)=>{const r=R*(arcPcts[i]||0)/100,x=CX+r*Math.cos(angle),y=CY+r*Math.sin(angle);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.closePath();ctx.fill();ctx.stroke();
+  arcAngles.forEach((angle,i)=>{const r=R*(arcPcts[i]||0)/100,x=CX+r*Math.cos(angle),y=CY+r*Math.sin(angle);ctx.beginPath();ctx.arc(x,y,7,0,Math.PI*2);ctx.fillStyle=arcColors[i];ctx.fill();ctx.strokeStyle='#0d0d0d';ctx.lineWidth=2;ctx.stroke();});
+  ARCHETYPES.forEach((a,i)=>{const angle=arcAngles[i],lx=CX+(R+28)*Math.cos(angle),ly=CY+(R+28)*Math.sin(angle);ctx.font='bold 14px Arial';ctx.fillStyle=arcColors[i];ctx.textAlign=Math.cos(angle)>0.1?'left':Math.cos(angle)<-0.1?'right':'center';ctx.fillText(a.name,lx,ly+(Math.sin(angle)>0?12:0));});
+
+  // Value axes
+  ctx.fillStyle='rgba(255,255,255,0.07)';ctx.fillRect(48,480,W-96,1);
+  ctx.font='bold 15px Arial';ctx.fillStyle='rgba(240,236,224,0.35)';ctx.textAlign='right';
+  ctx.fillText('מפת הערכים',W-48,508);
+  const AX=520,AH=60,TW=W-110,TX=55;
+  axisData.forEach((axis,i)=>{
+    const y=AX+i*AH,pct=axis.pct/100,col=axisColors[i];
+    ctx.font='bold 14px Arial';ctx.fillStyle='#f0ece0';ctx.textAlign='right';ctx.fillText(axis.label,W-48,y+14);
+    ctx.font='12px Arial';ctx.fillStyle='rgba(240,236,224,0.3)';ctx.textAlign='right';ctx.fillText(axis.poleR,W-48,y+30);ctx.textAlign='left';ctx.fillText(axis.poleL,TX,y+30);
+    ctx.fillStyle='rgba(255,255,255,0.07)';rr(ctx,TX,y+38,TW,7,4);ctx.fill();
+    ctx.fillStyle=col+'28';rr(ctx,TX,y+38,TW*pct,7,4);ctx.fill();
+    const dx=TX+TW*pct;ctx.beginPath();ctx.arc(dx,y+41,9,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();ctx.strokeStyle='#0d0d0d';ctx.lineWidth=2;ctx.stroke();
+  });
+
+  // Parties
+  const PY=AX+5*AH+20;ctx.fillStyle='rgba(255,255,255,0.07)';ctx.fillRect(48,PY,W-96,1);
+  ctx.font='bold 15px Arial';ctx.fillStyle='rgba(240,236,224,0.35)';ctx.textAlign='right';ctx.fillText('ההתאמות שלי',W-48,PY+30);
+  top3.forEach((item,i)=>{
+    const py=PY+48+i*72,cw=W-96;
+    ctx.fillStyle=i===0?'rgba(0,180,110,0.12)':'rgba(255,255,255,0.04)';rr(ctx,48,py,cw,60,12);ctx.fill();
+    ctx.strokeStyle=i===0?'rgba(0,180,110,0.55)':'rgba(255,255,255,0.1)';ctx.lineWidth=1;ctx.stroke();
+    ctx.font='28px Arial';ctx.textAlign='left';ctx.fillText(item.emoji,66,py+40);
+    ctx.font='bold 18px Arial';ctx.fillStyle='#f0ece0';ctx.textAlign='right';ctx.fillText(item.name+(i===0?' ★':''),W-120,py+28);
+    ctx.font='13px Arial';ctx.fillStyle='rgba(240,236,224,0.4)';ctx.fillText(item.desc,W-120,py+48);
+    ctx.font='bold 26px Arial';ctx.fillStyle=i===0?'#00b46e':'rgba(240,236,224,0.6)';ctx.textAlign='left';ctx.fillText(item.pct+'%',108,py+40);
+  });
+
+  const FY=H-44;ctx.fillStyle='rgba(255,255,255,0.06)';ctx.fillRect(48,FY-18,W-96,1);
+  ctx.font='bold 14px Arial';ctx.fillStyle=arcColor+'80';ctx.textAlign='center';
+  ctx.fillText('גלה גם אתה ← '+window.location.hostname,W/2,FY+8);
+
+  document.getElementById('share-card-wrap').style.display='block';
+  document.getElementById('share-btns-initial').style.display='none';
+  document.getElementById('share-btns-after').style.display='flex';
+  const link=document.getElementById('download-link');
+  link.href=canvas.toDataURL('image/png');
+  link.download='הפרופיל-הערכי-שלי-2026.png';
+  link.click();
+}
+
+function rr(ctx,x,y,w,h,r){if(w<=0)return;ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
+
+function copyLink(){const url=window.location.href;if(navigator.clipboard)navigator.clipboard.writeText(url);else{const t=document.createElement('textarea');t.value=url;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);}const el=document.getElementById('copy-confirm');el.style.display='block';setTimeout(()=>el.style.display='none',3000);}
+function copyCompareLink(){const url=window.location.href;if(navigator.clipboard)navigator.clipboard.writeText(url);else{const t=document.createElement('textarea');t.value=url;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);}const el=document.getElementById('compare-copied');el.style.display='block';setTimeout(()=>el.style.display='none',3000);}
+</script>
+</body>
+</html>
